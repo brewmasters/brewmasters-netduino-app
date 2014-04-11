@@ -24,10 +24,12 @@ namespace Brewmasters
             //Microsoft.SPOT.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces()[0].EnableStaticIP("192.168.2.75", "255.255.255.0", "192.168.2.1");
             //DS18B20 t1 = new DS18B20(Pins.GPIO_PIN_D0);
             //DS18B20 t2 = new DS18B20(Pins.GPIO_PIN_D1);
-            //OutputPort HeatingElement = new OutputPort(Pins.GPIO_PIN_A2, true);
+            //OutputPort HeatingElement = new OutputPort(Pins.GPIO_PIN_D2, true);
+            //OutputPort Pump = new OutputPort(Pins.GPIO_PIN_D3, true);
             WebServer server = new WebServer();
             
             server.ListenForRequest();
+
 
            
 

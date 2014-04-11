@@ -10,10 +10,13 @@ using Microsoft.SPOT.Net.NetworkInformation;
 using Microsoft.SPOT.Hardware;
 using SecretLabs.NETMF.Hardware.Netduino;
 
+
 namespace Brewmasters
 {
     class WebServer : IDisposable
     {
+        private Serializer JSONSerializer = new Serializer();
+        private DateTime startTime = DateTime.Now;
         private const int Backlog = 10;
         private Socket _socket = null;
         private Thread _thread = null;
@@ -24,7 +27,7 @@ namespace Brewmasters
         private static byte[] ErrorResponse = Encoding.UTF8.GetBytes("<HTML><HEAD><TITLE>Website</TITLE></HEAD><BODY><H1>Content Not Found</H1></BODY></HTML>");
         private static byte[] HelloWorld = Encoding.UTF8.GetBytes("<HTML><HEAD><TITLE>Website</TITLE></HEAD><BODY><H1>Hello World</H1></BODY></HTML>");
         private OutputPort led = new OutputPort(Pins.ONBOARD_LED, false);
-
+        private Recipe currentRecipe = null;
 
 
         public WebServer(string location, int port = 80)
@@ -76,7 +79,7 @@ namespace Brewmasters
 
         {
 
-            while (true)
+            while (currentRecipe==null)
 
             {
 
@@ -108,15 +111,17 @@ namespace Brewmasters
 
                         Debug.Print(request);
 
+                        LoadRecipe(request);
+
                         //Compose a response
 
-                        string response = "Hello World";
+                        //string response = "Hello World";
 
-                        string header = "HTTP/1.0 200 OK\r\nContent-Type: text; charset=utf-8\r\nContent-Length: " + response.Length.ToString() + "\r\nConnection: close\r\n\r\n";
+                        //string header = "HTTP/1.0 200 OK\r\nContent-Type: text; charset=utf-8\r\nContent-Length: " + response.Length.ToString() + "\r\nConnection: close\r\n\r\n";
 
-                        clientSocket.Send(Encoding.UTF8.GetBytes(header), header.Length, SocketFlags.None);
+                        //clientSocket.Send(Encoding.UTF8.GetBytes(header), header.Length, SocketFlags.None);
 
-                        clientSocket.Send(Encoding.UTF8.GetBytes(response), response.Length, SocketFlags.None);
+                        //clientSocket.Send(Encoding.UTF8.GetBytes(response), response.Length, SocketFlags.None);
 
                         //Blink the onboard LED
                         led.Write(true);
@@ -130,6 +135,14 @@ namespace Brewmasters
             }
 
         }
+         private void LoadRecipe(String recipe)
+         {
+             this.currentRecipe = JSONSerializer.Deserialize(recipe) as Recipe;
+         }
+         public Recipe getCurrentRecipe()
+         {
+             return this.currentRecipe;
+         }
 
         private void ListenForClients()
         {
