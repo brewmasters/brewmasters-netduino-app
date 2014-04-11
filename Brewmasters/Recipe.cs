@@ -1,5 +1,6 @@
 using System;
 using Microsoft.SPOT;
+using System.Collections;
 
 namespace Brewmasters
 {
@@ -18,13 +19,16 @@ namespace Brewmasters
         private int boilDuration { get; set; }
         private int mashDuration { get; set; }
 
-        public Recipe(long id,float waterGrainRatio, int mashTemp, int boilDuration, int mashDuration)
+        private Ingredient[] Ingredients { get; set; }
+
+        public Recipe(long id,float waterGrainRatio, int mashTemp, int boilDuration, int mashDuration,Ingredient[] Ingredients)
         {
             this.id = id;
             this.boilDuration = boilDuration;
             this.mashTemp = mashTemp;
             this.waterGrainRatio = waterGrainRatio;
             this.mashDuration = mashDuration;
+            this.Ingredients = Ingredients;
         }
     }
 }

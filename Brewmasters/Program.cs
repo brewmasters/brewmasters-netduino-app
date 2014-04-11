@@ -16,6 +16,7 @@ namespace Brewmasters
     public class Program
     {
         private const string WebsiteFilePath = @"\SD\";
+        int step = 1;
 
         public static void Main()
         {
@@ -30,7 +31,10 @@ namespace Brewmasters
             
             server.ListenForRequest();
 
+            while (server.getCurrentRecipe() != null)
+            {
 
+            }
            
 
             //float temp1 = t1.ConvertAndReadTemperature();

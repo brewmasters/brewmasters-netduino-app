@@ -71,15 +71,16 @@ namespace Brewmasters
             //Start listen for web requests
 
             _socket.Listen(10);
+            _thread = new Thread(new ThreadStart(ListenForRequest));
+            _thread.Start();
             
-            ListenForRequest();
 
         }
          public void ListenForRequest()
 
         {
 
-            while (currentRecipe==null)
+            while (true)
 
             {
 
@@ -135,15 +136,22 @@ namespace Brewmasters
             }
 
         }
-         private void LoadRecipe(String recipe)
-         {
-             this.currentRecipe = JSONSerializer.Deserialize(recipe) as Recipe;
-         }
-         public Recipe getCurrentRecipe()
-         {
-             return this.currentRecipe;
-         }
-
+        //Load the current Recipe
+        private void LoadRecipe(String recipe)
+        {
+            this.currentRecipe = JSONSerializer.Deserialize(recipe) as Recipe;
+            _thread.Abort();
+        }
+        //get the current Recipe from the webserver
+        public Recipe getCurrentRecipe()
+        {
+            return this.currentRecipe;
+        }
+        //Resets the current recipe called when process is completed or halted to allow the server to listen for a new request
+        private void resetRecipe()
+        {
+            this.currentRecipe = null;
+        }
         private void ListenForClients()
         {
             while (true)
