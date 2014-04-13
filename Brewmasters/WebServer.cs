@@ -15,7 +15,7 @@ namespace Brewmasters
 {
     class WebServer : IDisposable
     {
-        private Serializer JSONSerializer = new Serializer();
+        //private Serializer JSONSerializer = new Serializer();
         private DateTime startTime = DateTime.Now;
         private const int Backlog = 10;
         private Socket _socket = null;
@@ -139,7 +139,7 @@ namespace Brewmasters
         //Load the current Recipe
         private void LoadRecipe(String recipe)
         {
-            this.currentRecipe = JSONSerializer.Deserialize(recipe) as Recipe;
+            //this.currentRecipe = JSONSerializer.Deserialize(recipe) as Recipe;
             _thread.Abort();
         }
         //get the current Recipe from the webserver

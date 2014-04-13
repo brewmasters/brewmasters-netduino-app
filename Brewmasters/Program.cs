@@ -15,26 +15,63 @@ namespace Brewmasters
 {
     public class Program
     {
+        public static DS18B20 t1;
         private const string WebsiteFilePath = @"\SD\";
         int step = 1;
+
+        public static double getTemp(DS18B20 tempsensor) {
+            double temp = tempsensor.ConvertAndReadTemperature();
+            Debug.Print("getting temp value from sensor: " + temp.ToString());
+            return temp;
+
+        }
+
+        public static double getTemp1()
+        {
+            double temp = t1.ConvertAndReadTemperature();
+            Debug.Print("PID GETTING TEMP SENSOR VALUE: " + temp.ToString() + "\n");
+            return temp;
+        }
+
+        public static double getTempSetPoint()
+        {
+            double setpoint = 30.00;
+            Debug.Print("getting temperature set point: " + setpoint.ToString());
+            return setpoint;
+        }
+
+        public static void pidOutput(double value)
+        {
+            Debug.Print("PID OUTPUT VALUE: " + value.ToString() + "\n");
+        }
 
         public static void Main()
         {
             
-            Microsoft.SPOT.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces()[0].EnableDhcp();
+            //Microsoft.SPOT.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces()[0].EnableDhcp();
             //Microsoft.SPOT.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces()[0].EnableStaticIP("192.168.2.75", "255.255.255.0", "192.168.2.1");
-            //DS18B20 t1 = new DS18B20(Pins.GPIO_PIN_D0);
+            t1 = new DS18B20(Pins.GPIO_PIN_D0);
             //DS18B20 t2 = new DS18B20(Pins.GPIO_PIN_D1);
-            //OutputPort HeatingElement = new OutputPort(Pins.GPIO_PIN_D2, true);
-            //OutputPort Pump = new OutputPort(Pins.GPIO_PIN_D3, true);
-            WebServer server = new WebServer();
-            
-            server.ListenForRequest();
-
-            while (server.getCurrentRecipe() != null)
+            PID pid = new PID(100.00, 50.00, 0.00, 110.00, 10.00, 100, 0, getTemp1, getTempSetPoint, pidOutput);
+            pid.Enable();
+            while (true)
             {
 
+                
             }
+
+
+
+            //OutputPort HeatingElement = new OutputPort(Pins.GPIO_PIN_D2, true);
+            //OutputPort Pump = new OutputPort(Pins.GPIO_PIN_D3, true);
+            //WebServer server = new WebServer();
+            
+            //server.ListenForRequest();
+
+            //while (server.getCurrentRecipe() != null)
+            //{
+
+            //}
            
 
             //float temp1 = t1.ConvertAndReadTemperature();
