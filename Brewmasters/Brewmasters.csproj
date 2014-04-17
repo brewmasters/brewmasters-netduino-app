@@ -35,10 +35,27 @@
   </PropertyGroup>
   <Import Project="$(NetMfTargetsBaseDir)$(TargetFrameworkVersion)\CSharp.Targets" />
   <ItemGroup>
+    <Compile Include="357_357_Json.NETMF\NETMF\IndianaJones.NETMF.Json\Json.cs" />
+    <Compile Include="357_357_Json.NETMF\NETMF\IndianaJones.NETMF.Json\JSONParser.cs" />
+    <Compile Include="357_357_Json.NETMF\NETMF\IndianaJones.NETMF.Json\Properties\AssemblyInfo.cs" />
+    <Compile Include="357_357_Json.NETMF\NETMF\IndianaJones.NETMF.Json\PropertyTable.cs" />
+    <Compile Include="357_357_Json.NETMF\NETMF\IndianaJones.NETMF.Primitives\Array.cs" />
+    <Compile Include="357_357_Json.NETMF\NETMF\IndianaJones.NETMF.Primitives\ExtensionAttribute.cs" />
+    <Compile Include="357_357_Json.NETMF\NETMF\IndianaJones.NETMF.Primitives\Integer.cs" />
+    <Compile Include="357_357_Json.NETMF\NETMF\IndianaJones.NETMF.Primitives\Properties\AssemblyInfo.cs" />
+    <Compile Include="357_357_Json.NETMF\NETMF\IndianaJones.NETMF.Primitives\String.cs" />
+    <Compile Include="357_357_Json.NETMF\NETMF\IndianaJones.NETMF.Primitives\Time.cs" />
+    <Compile Include="357_357_Json.NETMF\NETMF\TestJson.NETMF\TestJson.NETMF\Program.cs" />
+    <Compile Include="357_357_Json.NETMF\NETMF\TestJson.NETMF\TestJson.NETMF\Properties\AssemblyInfo.cs" />
+    <Compile Include="357_357_Json.NETMF\NETMF\TestJson.NETMF\TestJson.NETMF\Resources.Designer.cs" />
+    <Compile Include="357_357_Json.NETMF\Source.cs" />
     <Compile Include="DS18B20.cs" />
+    <Compile Include="Ingredient.cs" />
     <Compile Include="OneWireBus.cs" />
+    <Compile Include="ProcessStep.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Recipe.cs" />
     <Compile Include="StringHelper.cs" />
     <Compile Include="WebServer.cs" />
   </ItemGroup>
@@ -54,5 +71,14 @@
     <Reference Include="SecretLabs.NETMF.IO, Version=4.2.0.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.IO" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="357_357_Json.NETMF\NETMF\IndianaJones.NETMF.Json\IndianaJones.NETMF.Json.csproj" />
+    <Content Include="357_357_Json.NETMF\NETMF\IndianaJones.NETMF.Primitives\IndianaJones.NETMF.Primitives.csproj" />
+    <Content Include="357_357_Json.NETMF\NETMF\TestJson.NETMF\TestJson.NETMF.sln" />
+    <Content Include="357_357_Json.NETMF\NETMF\TestJson.NETMF\TestJson.NETMF\TestJson.NETMF.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="357_357_Json.NETMF\NETMF\TestJson.NETMF\TestJson.NETMF\Resources.resx" />
   </ItemGroup>
 </Project>
