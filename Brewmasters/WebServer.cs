@@ -111,8 +111,19 @@ namespace Brewmasters
                         string request = new string(Encoding.UTF8.GetChars(buffer));
 
                         Debug.Print(request);
+                        if (request.Equals("Connect"))
+                        {
+                            clientSocket.Send(Encoding.UTF8.GetBytes(Program.isBrewing.ToString()), Program.isBrewing.ToString().Length, SocketFlags.None);
+                        }
 
-                        LoadRecipe(request);
+                        else
+                        {
+                            if (!Program.isBrewing)
+                            {
+                                LoadRecipe(request);
+                            }
+                        }
+                        
 
                         //Compose a response
 
@@ -140,7 +151,7 @@ namespace Brewmasters
         private void LoadRecipe(String recipe)
         {
             this.currentRecipe = JSONSerializer.Deserialize(recipe) as Recipe;
-            _thread.Abort();
+            //_thread.Abort();
         }
         //get the current Recipe from the webserver
         public Recipe getCurrentRecipe()
@@ -148,10 +159,12 @@ namespace Brewmasters
             return this.currentRecipe;
         }
         //Resets the current recipe called when process is completed or halted to allow the server to listen for a new request
-        private void resetRecipe()
+        public void resetRecipe()
         {
             this.currentRecipe = null;
         }
+        
+       
         private void ListenForClients()
         {
             while (true)
@@ -217,6 +230,15 @@ namespace Brewmasters
             string header = ResponseBegin + ErrorResponse.Length.ToString() + ResponseEnd;
             client.Send(Encoding.UTF8.GetBytes(header), header.Length, SocketFlags.None);
             client.Send(ErrorResponse, ErrorResponse.Length, SocketFlags.None);
+        }
+        public void SendErrorResponse()
+        {
+            if (_socket != null)
+            {
+                string header = ResponseBegin + ErrorResponse.Length.ToString() + ResponseEnd;
+                _socket.Send(Encoding.UTF8.GetBytes(header), header.Length, SocketFlags.None);
+                _socket.Send(ErrorResponse, ErrorResponse.Length, SocketFlags.None);
+            }
         }
         #region IDisposable
          ~WebServer()

@@ -16,7 +16,8 @@ namespace Brewmasters
     public class Program
     {
         private const string WebsiteFilePath = @"\SD\";
-        int step = 1;
+        public static ProcessStep step = ProcessStep.Idle;
+        public static bool isBrewing = false;
 
         public static void Main()
         {
@@ -31,9 +32,44 @@ namespace Brewmasters
             
             server.ListenForRequest();
 
-            while (server.getCurrentRecipe() != null)
+            while (true)
             {
-
+                if (server.getCurrentRecipe() != null && !isBrewing)
+                {
+                    isBrewing = true;
+                }
+                if (isBrewing)
+                {
+                    if (step.Equals(ProcessStep.Cleaning))
+                    {
+                        RunCleaning();
+                    }
+                    else if (step.Equals(ProcessStep.Mashing))
+                    {
+                        RunMashing();
+                    }
+                    else if (step.Equals(ProcessStep.Sparging))
+                    {
+                        RunSparging();
+                    }
+                    else if (step.Equals(ProcessStep.Boiling))
+                    {
+                        RunBoiling();
+                    }
+                    else if (step.Equals(ProcessStep.Cooling))
+                    {
+                        RunCooling();
+                    }
+                    else if (step.Equals(ProcessStep.Reset))
+                    {
+                        server.resetRecipe();
+                        isBrewing = false;
+                    }
+                    else
+                    {
+                        server.SendErrorResponse();
+                    }
+                }
             }
            
 
@@ -45,6 +81,46 @@ namespace Brewmasters
               
 
 
+        }
+        private static void RunCleaning()
+        {
+            while(true)
+            {
+
+            }
+            step++;
+        }
+        private static void RunMashing()
+        {
+            while (true)
+            {
+
+            }
+            step++;
+        }
+        private static void RunSparging()
+        {
+            while (true)
+            {
+
+            }
+            step++;
+        }
+        private static void RunBoiling()
+        {
+            while (true)
+            {
+
+            }
+            step++;
+        }
+        private static void RunCooling()
+        {
+            while (true)
+            {
+
+            }
+            step++;
         }
 
     }
