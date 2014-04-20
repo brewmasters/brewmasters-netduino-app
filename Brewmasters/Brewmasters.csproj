@@ -12,6 +12,7 @@
     <NetMfTargetsBaseDir Condition="'$(NetMfTargetsBaseDir)'==''">$(MSBuildExtensionsPath32)\Microsoft\.NET Micro Framework\</NetMfTargetsBaseDir>
     <DeployDevice>Netduino</DeployDevice>
     <DeployTransport>USB</DeployTransport>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -39,12 +40,13 @@
     <Compile Include="DS18B20.cs" />
     <Compile Include="Ingredient.cs" />
     <Compile Include="OneWireBus.cs" />
+    <Compile Include="PostHandler.cs" />
     <Compile Include="ProcessStep.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="RandomHandler.cs" />
     <Compile Include="Recipe.cs" />
-    <Compile Include="StringHelper.cs" />
-    <Compile Include="WebServer.cs" />
+    <Compile Include="TestHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.SPOT.Hardware" />
@@ -59,5 +61,11 @@
     <Reference Include="SecretLabs.NETMF.IO, Version=4.2.0.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.IO" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EmbeddedWebserver.Core\EmbeddedWebserver.Core.csproj">
+      <Project>{F97AB7CF-5867-4351-BAB6-6E42D6D5F5A6}</Project>
+      <Name>EmbeddedWebserver.Core</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

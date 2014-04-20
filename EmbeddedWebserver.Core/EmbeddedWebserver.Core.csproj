@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <AssemblyName>EmbeddedWebserver.Core</AssemblyName>
+    <OutputType>Library</OutputType>
+    <RootNamespace>EmbeddedWebserver.Core</RootNamespace>
+    <ProjectTypeGuids>{b69e3092-b931-443c-abe7-7e7b65f2a37f};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F97AB7CF-5867-4351-BAB6-6E42D6D5F5A6}</ProjectGuid>
+    <TargetFrameworkVersion>v4.2</TargetFrameworkVersion>
+    <NetMfTargetsBaseDir Condition="'$(NetMfTargetsBaseDir)'==''">$(MSBuildExtensionsPath32)\Microsoft\.NET Micro Framework\</NetMfTargetsBaseDir>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <Import Project="$(NetMfTargetsBaseDir)$(TargetFrameworkVersion)\CSharp.Targets" />
+  <ItemGroup>
+    <Compile Include="Configuration\Abstract\ConfigurationParserBase.cs" />
+    <Compile Include="Configuration\ConfigurationSyntaxErrorException.cs" />
+    <Compile Include="Configuration\EmbeddedWebapplicationConfiguration.cs" />
+    <Compile Include="Handlers\DiagnosticsHandler.cs" />
+    <Compile Include="Helpers\DebugHelper.cs" />
+    <Compile Include="Helpers\PathHelper.cs" />
+    <Compile Include="Helpers\StringBuilder.cs" />
+    <Compile Include="Helpers\StringReader.cs" />
+    <Compile Include="HttpObjectBase.cs" />
+    <Compile Include="Internal\RequestStream.cs" />
+    <Compile Include="Modules\RequestFilterModule.cs" />
+    <Compile Include="Webserver.cs" />
+    <Compile Include="Handlers\Abstract\HandlerBase.cs" />
+    <Compile Include="Handlers\FileSystemHandler.cs" />
+    <Compile Include="Handlers\Interfaces\IHandler.cs" />
+    <Compile Include="Helpers\Activator.cs" />
+    <Compile Include="Helpers\ExtensionAttribute.cs" />
+    <Compile Include="Helpers\StringDictionary.cs" />
+    <Compile Include="Helpers\StringHelper.cs" />
+    <Compile Include="HttpEventArguments.cs" />
+    <Compile Include="HttpException.cs" />
+    <Compile Include="HttpMethods.cs" />
+    <Compile Include="IHttpServerUtility.cs" />
+    <Compile Include="Internal\Abstract\SocketServerBase.cs" />
+    <Compile Include="HttpContext.cs" />
+    <Compile Include="HttpRequest.cs" />
+    <Compile Include="HttpResponse.cs" />
+    <Compile Include="HttpStatusCodes.cs" />
+    <Compile Include="Internal\HttpRequestParser.cs" />
+    <Compile Include="Modules\Interfaces\IModule.cs" />
+    <Compile Include="Modules\Abstract\ModuleBase.cs" />
+    <Compile Include="WebserverDiagnostics.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.SPOT.Native" />
+    <Reference Include="System" />
+    <Reference Include="System.IO" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+</Project>

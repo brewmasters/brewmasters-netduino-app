@@ -9,7 +9,9 @@ using SecretLabs.NETMF.Hardware.Netduino;
 using ThreelnDotOrg.NETMF.Hardware;
 using System.IO;
 using SecretLabs.NETMF.IO;
-
+using EmbeddedWebserver.Core;
+using EmbeddedWebserver.Core.Configuration;
+using EmbeddedWebserver.Core.Helpers;
 
 namespace Brewmasters
 {
@@ -18,6 +20,8 @@ namespace Brewmasters
         public static DS18B20 t1;
         private const string WebsiteFilePath = @"\SD\";
         int step = 1;
+
+
 
         public static double getTemp(DS18B20 tempsensor) {
             double temp = tempsensor.ConvertAndReadTemperature();
@@ -50,17 +54,24 @@ namespace Brewmasters
             
             //Microsoft.SPOT.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces()[0].EnableDhcp();
             //Microsoft.SPOT.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces()[0].EnableStaticIP("192.168.2.75", "255.255.255.0", "192.168.2.1");
-            t1 = new DS18B20(Pins.GPIO_PIN_D0);
+            //t1 = new DS18B20(Pins.GPIO_PIN_D0);
             //DS18B20 t2 = new DS18B20(Pins.GPIO_PIN_D1);
-            PID pid = new PID(100.00, 50.00, 0.00, 110.00, 10.00, 100, 0, getTemp1, getTempSetPoint, pidOutput);
-            pid.Enable();
-            while (true)
+            //PID pid = new PID(100.00, 50.00, 0.00, 110.00, 10.00, 100, 0, getTemp1, getTempSetPoint, pidOutput);
+            //pid.Enable();
+            //Microsoft.SPOT.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces()[0].EnableStaticIP("192.168.1.100", "255.255.255.0", "192.168.0.1");
+            Microsoft.SPOT.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces()[0].EnableDhcp();
+            EmbeddedWebapplicationConfiguration config = new EmbeddedWebapplicationConfiguration(@"SD\webroot");
+            config.ReadConfiguration();
+
+            using (Webserver server = new Webserver(config))
             {
-
-                
+                server.RegisterHandler("hello", typeof(TestHandler));
+                server.RegisterHandler("random", typeof(RandomHandler));
+                server.RegisterThreadSafeHandler("rnd", new RandomHandler());
+                server.RegisterThreadSafeHandler("post", new PostHandler());
+                server.StartListening();
+                Thread.Sleep(System.Threading.Timeout.Infinite);
             }
-
-
 
             //OutputPort HeatingElement = new OutputPort(Pins.GPIO_PIN_D2, true);
             //OutputPort Pump = new OutputPort(Pins.GPIO_PIN_D3, true);

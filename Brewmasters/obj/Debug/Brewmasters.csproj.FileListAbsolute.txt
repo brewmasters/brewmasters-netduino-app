@@ -58,7 +58,6 @@ C:\Users\gt565k\Documents\GitHub\brewmasters-netduino-app\Brewmasters\bin\Debug\
 C:\Users\gt565k\Documents\GitHub\brewmasters-netduino-app\Brewmasters\bin\Debug\BE\SecretLabs.NETMF.IO.pdbx
 C:\Users\gt565k\Documents\GitHub\brewmasters-netduino-app\Brewmasters\bin\Debug\SecretLabs.NETMF.Hardware.dll
 C:\Users\gt565k\Documents\GitHub\brewmasters-netduino-app\Brewmasters\bin\Debug\SecretLabs.NETMF.Hardware.Netduino.dll
-C:\Users\gt565k\Documents\GitHub\brewmasters-netduino-app\Brewmasters\bin\Debug\SecretLabs.NETMF.IO.dll
 C:\Users\gt565k\Documents\GitHub\brewmasters-netduino-app\Brewmasters\bin\Debug\SecretLabs.NETMF.Hardware.pdb
 C:\Users\gt565k\Documents\GitHub\brewmasters-netduino-app\Brewmasters\bin\Debug\SecretLabs.NETMF.Hardware.Netduino.pdb
 C:\Users\gt565k\Documents\GitHub\brewmasters-netduino-app\Brewmasters\bin\Debug\SecretLabs.NETMF.IO.pdb
@@ -70,3 +69,10 @@ C:\Users\gt565k\Documents\GitHub\brewmasters-netduino-app\Brewmasters\obj\Debug\
 C:\Users\gt565k\Documents\GitHub\brewmasters-netduino-app\Brewmasters\obj\Debug\le\Brewmasters.pdbx
 C:\Users\gt565k\Documents\GitHub\brewmasters-netduino-app\Brewmasters\obj\Debug\Brewmasters.exe
 C:\Users\gt565k\Documents\GitHub\brewmasters-netduino-app\Brewmasters\obj\Debug\Brewmasters.pdb
+C:\Users\gt565k\Documents\GitHub\brewmasters-netduino-app\Brewmasters\bin\Debug\LE\EmbeddedWebserver.Core.pe
+C:\Users\gt565k\Documents\GitHub\brewmasters-netduino-app\Brewmasters\bin\Debug\BE\EmbeddedWebserver.Core.pe
+C:\Users\gt565k\Documents\GitHub\brewmasters-netduino-app\Brewmasters\bin\Debug\LE\EmbeddedWebserver.Core.pdbx
+C:\Users\gt565k\Documents\GitHub\brewmasters-netduino-app\Brewmasters\bin\Debug\BE\EmbeddedWebserver.Core.pdbx
+C:\Users\gt565k\Documents\GitHub\brewmasters-netduino-app\Brewmasters\bin\Debug\SecretLabs.NETMF.IO.dll
+C:\Users\gt565k\Documents\GitHub\brewmasters-netduino-app\Brewmasters\bin\Debug\EmbeddedWebserver.Core.dll
+C:\Users\gt565k\Documents\GitHub\brewmasters-netduino-app\Brewmasters\bin\Debug\EmbeddedWebserver.Core.pdb

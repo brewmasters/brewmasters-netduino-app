@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual C# Express 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brewmasters", "Brewmasters\Brewmasters.csproj", "{A0A469F9-9D07-480B-8F77-ED324AD7277F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmbeddedWebserver.Core", "EmbeddedWebserver.Core\EmbeddedWebserver.Core.csproj", "{F97AB7CF-5867-4351-BAB6-6E42D6D5F5A6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{A0A469F9-9D07-480B-8F77-ED324AD7277F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0A469F9-9D07-480B-8F77-ED324AD7277F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A0A469F9-9D07-480B-8F77-ED324AD7277F}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{F97AB7CF-5867-4351-BAB6-6E42D6D5F5A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F97AB7CF-5867-4351-BAB6-6E42D6D5F5A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F97AB7CF-5867-4351-BAB6-6E42D6D5F5A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F97AB7CF-5867-4351-BAB6-6E42D6D5F5A6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
