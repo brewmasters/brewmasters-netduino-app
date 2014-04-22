@@ -35,15 +35,8 @@
   </PropertyGroup>
   <Import Project="$(NetMfTargetsBaseDir)$(TargetFrameworkVersion)\CSharp.Targets" />
   <ItemGroup>
-    <Compile Include="Json.cs" />
     <Compile Include="JSONParser.cs" />
-    <Compile Include="PropertyTable.cs" />
-    <Compile Include="Array.cs" />
-    <Compile Include="ExtensionAttribute.cs" />
-    <Compile Include="Integer.cs" />
-    <Compile Include="Strings.cs" />
-    <Compile Include="Time.cs" />
-    <Compile Include="Source.cs" />
+    <Compile Include="ResponseObject.cs" />
     <Compile Include="DS18B20.cs" />
     <Compile Include="Ingredient.cs" />
     <Compile Include="OneWireBus.cs" />

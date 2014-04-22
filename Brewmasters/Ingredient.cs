@@ -5,14 +5,14 @@ namespace Brewmasters
 {
     public class Ingredient
     {
-        private long id { get; set; }
-        private Recipe recipe { get; set; }
-        private String name { get; set; }
-        private String type { get; set; }
-        private String description { get; set; }
-        private int amount { get; set; }
-        private String unit { get; set; }
-        private int addTime { get; set; }
+        public long id { get; set; }
+        public long recipe_id { get; set; }
+        public String name { get; set; }
+        public String type { get; set; }
+        public String description { get; set; }
+        public int amount { get; set; }
+        public String unit { get; set; }
+        public int add_time { get; set; }
 
 
     }

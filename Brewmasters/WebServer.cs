@@ -9,50 +9,33 @@ using Microsoft.SPOT.Net;
 using Microsoft.SPOT.Net.NetworkInformation;
 using Microsoft.SPOT.Hardware;
 using SecretLabs.NETMF.Hardware.Netduino;
+using System.Collections;
+
 
 
 namespace Brewmasters
 {
     class WebServer : IDisposable
     {
-        private Serializer JSONSerializer = new Serializer();
+        private JSONParser JSONSerializer = new JSONParser();
         private DateTime startTime = DateTime.Now;
         private const int Backlog = 10;
         private Socket _socket = null;
+        public Socket lastSocket = null;
         private Thread _thread = null;
-        private string _location = null;
+        //private string _location = null;
         private const int FileBufferLength = 1024;
         private const string ResponseBegin = "HTTP/1.0 200 OK\r\nContent-Type: text; charset=utf-8\r\nContent-Length: ";
         private const string ResponseEnd = "\r\nConnection: close\r\n\r\n";
         private static byte[] ErrorResponse = Encoding.UTF8.GetBytes("<HTML><HEAD><TITLE>Website</TITLE></HEAD><BODY><H1>Content Not Found</H1></BODY></HTML>");
         private static byte[] HelloWorld = Encoding.UTF8.GetBytes("<HTML><HEAD><TITLE>Website</TITLE></HEAD><BODY><H1>Hello World</H1></BODY></HTML>");
-        private OutputPort led = new OutputPort(Pins.ONBOARD_LED, false);
+        //private OutputPort led = new OutputPort(Pins.ONBOARD_LED, false);
         private Recipe currentRecipe = null;
+       
+       
 
 
-        public WebServer(string location, int port = 80)
-        {
-            //Microsoft.SPOT.Net.NetworkInformation.NetworkInterface NI = Microsoft.SPOT.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces()[0];
-
-            //// DHCP
-            //NI.EnableDhcp();
-            //NI.ReleaseDhcpLease();
-            //NI.RenewDhcpLease();
-            //Debug.Print(NI.IPAddress.ToString());
-
-            //// Static
-            //NI.EnableStaticIP("192.168.2.75", "255.255.255.0", "192.168.2.1");
-            //Debug.Print(NI.IPAddress.ToString());
-            _location = location;
-            //NetworkInterface.EnableStaticIP("169.254.237.131", "255.255.0.0 ", "50-B7-C3-92-F9-5F");
-            _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            _socket.Bind(new IPEndPoint(IPAddress.Any, port));
-
-            _socket.Listen(Backlog);
-            Debug.Print(Microsoft.SPOT.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces()[0].IPAddress);
-            _thread = new Thread(new ThreadStart(ListenForClients));
-            _thread.Start();
-        }
+        
          public WebServer()
 
         {            
@@ -73,6 +56,7 @@ namespace Brewmasters
             _socket.Listen(10);
             _thread = new Thread(new ThreadStart(ListenForRequest));
             _thread.Start();
+            //ListenForRequest();
             
 
         }
@@ -87,7 +71,7 @@ namespace Brewmasters
                 using (Socket clientSocket = _socket.Accept())
 
                 {
-                    
+                    lastSocket = clientSocket;
                     //Get clients IP
 
                     IPEndPoint clientIP = clientSocket.RemoteEndPoint as IPEndPoint;
@@ -109,36 +93,187 @@ namespace Brewmasters
                         int byteCount = clientSocket.Receive(buffer, bytesReceived, SocketFlags.None);
 
                         string request = new string(Encoding.UTF8.GetChars(buffer));
+                        //if(request
 
                         Debug.Print(request);
-                        if (request.Equals("Connect"))
-                        {
-                            clientSocket.Send(Encoding.UTF8.GetBytes(Program.isBrewing.ToString()), Program.isBrewing.ToString().Length, SocketFlags.None);
-                        }
+                        //if (request.Equals("Connect"))
+                        //{
+                        //    clientSocket.Send(Encoding.UTF8.GetBytes(Program.isBrewing.ToString()), Program.isBrewing.ToString().Length, SocketFlags.None);
+                        //}
 
-                        else
-                        {
-                            if (!Program.isBrewing)
-                            {
-                                LoadRecipe(request);
-                            }
-                        }
+                        //else
+                        //{
+                        //    if (!Program.isBrewing)
+                        //    {
+                        //        LoadRecipe(request);
+                        //    }
+                        //}
                         
 
                         //Compose a response
 
-                        //string response = "Hello World";
+                        try{
+                            String URL = StringHelper.GetTextBetween(request, "GET", "HTTP");
+                            if (URL.Equals("status") || URL.Equals("/status"))
+                            {
+                                ResponseObject ro = new ResponseObject("");
+                                string response = JSONSerializer.Serialize(ro);
+                                //string response = "Nice";
+                                string header = "HTTP/1.0 200 OK\r\nContent-Type: text; charset=utf-8\r\nContent-Length: " + response.Length.ToString() + "\r\nConnection: close\r\n\r\n";
+                                clientSocket.Send(Encoding.UTF8.GetBytes(header), header.Length, SocketFlags.None);
+                                clientSocket.Send(Encoding.UTF8.GetBytes(response), response.Length, SocketFlags.None);
 
-                        //string header = "HTTP/1.0 200 OK\r\nContent-Type: text; charset=utf-8\r\nContent-Length: " + response.Length.ToString() + "\r\nConnection: close\r\n\r\n";
+                            }
+                            else if (URL.Equals("recipe") || URL.Equals("/recipe"))
+                            {
+                            
+                                LoadRecipe(request);
+                                string response = "Recipe failed to load please try again";
+                                if (currentRecipe != null)
+                                {
+                                    Program.NextStep = true;
+                                    response = "Recipe Loaded Successfully";
+                                }
 
-                        //clientSocket.Send(Encoding.UTF8.GetBytes(header), header.Length, SocketFlags.None);
+                                string header = "HTTP/1.0 200 OK\r\nContent-Type: text; charset=utf-8\r\nContent-Length: " + response.Length.ToString() + "\r\nConnection: close\r\n\r\n";
+                                clientSocket.Send(Encoding.UTF8.GetBytes(header), header.Length, SocketFlags.None);
 
-                        //clientSocket.Send(Encoding.UTF8.GetBytes(response), response.Length, SocketFlags.None);
+                                clientSocket.Send(Encoding.UTF8.GetBytes(response), response.Length, SocketFlags.None);
+                            }
+                            else if (URL.Equals("mashwaterconfirm") || URL.Equals("/mashwaterconfirm"))
+                            {
+                                if (Program.step.Equals(ProcessStep.PreMash) && Program.isWaiting)
+                                {
+                                    Program.isWaiting = false;
+                                }
+                                string response = "Beginning Heating";
+                                
 
+                                string header = "HTTP/1.0 200 OK\r\nContent-Type: text; charset=utf-8\r\nContent-Length: " + response.Length.ToString() + "\r\nConnection: close\r\n\r\n";
+                                clientSocket.Send(Encoding.UTF8.GetBytes(header), header.Length, SocketFlags.None);
+
+                                clientSocket.Send(Encoding.UTF8.GetBytes(response), response.Length, SocketFlags.None);
+                            
+                            }
+                            else if (URL.Equals("openvalveconfirm") || URL.Equals("/openvalveconfirm"))
+                            {
+                                if (Program.step.Equals(ProcessStep.PreMash) && Program.isWaiting)
+                                {
+                                    Program.isWaiting = false;
+                                }
+                                string response = "Beginning Pumping";
+
+
+                                string header = "HTTP/1.0 200 OK\r\nContent-Type: text; charset=utf-8\r\nContent-Length: " + response.Length.ToString() + "\r\nConnection: close\r\n\r\n";
+                                clientSocket.Send(Encoding.UTF8.GetBytes(header), header.Length, SocketFlags.None);
+
+                                clientSocket.Send(Encoding.UTF8.GetBytes(response), response.Length, SocketFlags.None);
+
+                            }
+                            else if (URL.Equals("closevalveconfirm") || URL.Equals("/closevalveconfirm"))
+                            {
+                                if (Program.step.Equals(ProcessStep.PreMash) && Program.isWaiting)
+                                {
+                                    Program.isWaiting = false;
+                                }
+                                string response = "Beginning Mash";
+
+
+                                string header = "HTTP/1.0 200 OK\r\nContent-Type: text; charset=utf-8\r\nContent-Length: " + response.Length.ToString() + "\r\nConnection: close\r\n\r\n";
+                                clientSocket.Send(Encoding.UTF8.GetBytes(header), header.Length, SocketFlags.None);
+
+                                clientSocket.Send(Encoding.UTF8.GetBytes(response), response.Length, SocketFlags.None);
+
+                            }
+                            else if (URL.Equals("spargewaterconfirm") || URL.Equals("/spargewaterconfirm"))
+                            {
+                                if (Program.step.Equals(ProcessStep.Mashing) && Program.isWaiting)
+                                {
+                                    Program.isWaiting = false;
+                                }
+                                string response = "Heating sparge water";
+
+
+                                string header = "HTTP/1.0 200 OK\r\nContent-Type: text; charset=utf-8\r\nContent-Length: " + response.Length.ToString() + "\r\nConnection: close\r\n\r\n";
+                                clientSocket.Send(Encoding.UTF8.GetBytes(header), header.Length, SocketFlags.None);
+
+                                clientSocket.Send(Encoding.UTF8.GetBytes(response), response.Length, SocketFlags.None);
+
+                            }
+                            else if (URL.Equals("spargevalveopenconfirm") || URL.Equals("/spargevalveopenconfirm"))
+                            {
+                                if (Program.step.Equals(ProcessStep.Sparging) && Program.isWaiting)
+                                {
+                                    Program.isWaiting = false;
+                                }
+                                string response = "Beginning Sparge";
+
+
+                                string header = "HTTP/1.0 200 OK\r\nContent-Type: text; charset=utf-8\r\nContent-Length: " + response.Length.ToString() + "\r\nConnection: close\r\n\r\n";
+                                clientSocket.Send(Encoding.UTF8.GetBytes(header), header.Length, SocketFlags.None);
+
+                                clientSocket.Send(Encoding.UTF8.GetBytes(response), response.Length, SocketFlags.None);
+
+                            }
+                            else if (URL.Equals("spargevalvecloseconfirm") || URL.Equals("/spargevalvecloseconfirm"))
+                            {
+                                if (Program.step.Equals(ProcessStep.Sparging) && Program.isWaiting)
+                                {
+                                    Program.isWaiting = false;
+                                }
+                                string response = "Beginning Boiling";
+
+
+                                string header = "HTTP/1.0 200 OK\r\nContent-Type: text; charset=utf-8\r\nContent-Length: " + response.Length.ToString() + "\r\nConnection: close\r\n\r\n";
+                                clientSocket.Send(Encoding.UTF8.GetBytes(header), header.Length, SocketFlags.None);
+
+                                clientSocket.Send(Encoding.UTF8.GetBytes(response), response.Length, SocketFlags.None);
+
+                            }
+                            else if (URL.Equals("hopsaddconfirm") || URL.Equals("/hopsaddconfirm"))
+                            {
+                                if (Program.step.Equals(ProcessStep.Boiling) && Program.isWaiting)
+                                {
+                                    Program.isWaiting = false;
+                                }
+                                string response = "Continuing Boiling";
+
+
+                                string header = "HTTP/1.0 200 OK\r\nContent-Type: text; charset=utf-8\r\nContent-Length: " + response.Length.ToString() + "\r\nConnection: close\r\n\r\n";
+                                clientSocket.Send(Encoding.UTF8.GetBytes(header), header.Length, SocketFlags.None);
+
+                                clientSocket.Send(Encoding.UTF8.GetBytes(response), response.Length, SocketFlags.None);
+
+                            }
+                            else if (URL.Equals("iceaddconfirm") || URL.Equals("/iceaddconfirm"))
+                            {
+                                if (Program.step.Equals(ProcessStep.Boiling) && Program.isWaiting)
+                                {
+                                    Program.isWaiting = false;
+                                }
+                                string response = "Finished with microcontroller process";
+
+
+                                string header = "HTTP/1.0 200 OK\r\nContent-Type: text; charset=utf-8\r\nContent-Length: " + response.Length.ToString() + "\r\nConnection: close\r\n\r\n";
+                                clientSocket.Send(Encoding.UTF8.GetBytes(header), header.Length, SocketFlags.None);
+
+                                clientSocket.Send(Encoding.UTF8.GetBytes(response), response.Length, SocketFlags.None);
+
+                            }
+                            
+                        }
+                        catch
+                        {
+                            string response = "An error has occured please try again";
+                            string header = "HTTP/1.0 200 OK\r\nContent-Type: text; charset=utf-8\r\nContent-Length: " + response.Length.ToString() + "\r\nConnection: close\r\n\r\n";
+                            clientSocket.Send(Encoding.UTF8.GetBytes(header), header.Length, SocketFlags.None);
+
+                            clientSocket.Send(Encoding.UTF8.GetBytes(response), response.Length, SocketFlags.None);
+                        }
                         //Blink the onboard LED
-                        led.Write(true);
-                        Thread.Sleep(150);
-                        led.Write(false);
+                        //led.Write(true);
+                        //Thread.Sleep(10);
+                        //led.Write(false);
 
                     }
 
@@ -150,13 +285,28 @@ namespace Brewmasters
         //Load the current Recipe
         private void LoadRecipe(String recipe)
         {
-            this.currentRecipe = JSONSerializer.Deserialize(recipe) as Recipe;
+            
+            this.currentRecipe = JSONSerializer.Deserialize(recipe);
+            
             //_thread.Abort();
         }
         //get the current Recipe from the webserver
         public Recipe getCurrentRecipe()
         {
             return this.currentRecipe;
+        }
+        public void SendResponse(string response)
+        {
+
+            if (lastSocket != null)
+            {
+                
+                string header = "HTTP/1.0 200 OK\r\nContent-Type: text; charset=utf-8\r\nContent-Length: " + response.Length.ToString() + "\r\nConnection: close\r\n\r\n";
+
+                lastSocket.Send(Encoding.UTF8.GetBytes(header), header.Length, SocketFlags.None);
+
+                lastSocket.Send(Encoding.UTF8.GetBytes(response), response.Length, SocketFlags.None);
+            }
         }
         //Resets the current recipe called when process is completed or halted to allow the server to listen for a new request
         public void resetRecipe()
@@ -165,66 +315,7 @@ namespace Brewmasters
         }
         
        
-        private void ListenForClients()
-        {
-            while (true)
-            {
-                using (Socket client = _socket.Accept())
-                {
-                    // Wait for data to become available
-                    while (!client.Poll(10, SelectMode.SelectRead)) ;
-
-                    int bytesSent = client.Available;
-                    if (bytesSent > 0)
-                    {
-                        byte[] buffer = new byte[bytesSent];
-                        int bytesReceived = client.Receive(buffer, bytesSent, SocketFlags.None);
-
-                        if (bytesReceived == bytesSent)
-                        {
-                            string request = new string(Encoding.UTF8.GetChars(buffer));
-                            Debug.Print(request);
-
-                            Respond(client, request);
-                        }
-                    }
-                }
-            }
-        }
-        private void Respond(Socket client,string file)
-        {
-            //if (StringHelper.GetTextBetween(file, "GET", "HTTP").Equals("/index"))
-            //{
-            //    client.Send(HelloWorld, HelloWorld.Length, SocketFlags.None);
-            //}
-            SendFile(client, file);
-        }
-        private void SendFile(Socket client, string file)
-        {
-            if (File.Exists(file))
-            {
-                using (FileStream stream = File.Open(file, FileMode.Open))
-                {
-                    long fileSize = stream.Length;
-
-                    string header = ResponseBegin + fileSize.ToString() + ResponseEnd;
-                    client.Send(Encoding.UTF8.GetBytes(header), header.Length, SocketFlags.None);
-
-                    byte[] buffer = new byte[FileBufferLength];
-
-                    while (stream.Position < stream.Length)
-                    {
-                        int xferSize = System.Math.Min(FileBufferLength, (int)(stream.Length - stream.Position));
-                        stream.Read(buffer, 0, xferSize);
-                        client.Send(buffer, xferSize, SocketFlags.None);
-                    }
-                }
-            }
-            else
-            {
-                SendErrorResponse(client);
-            }
-        }
+       
         private void SendErrorResponse(Socket client)
         {
             string header = ResponseBegin + ErrorResponse.Length.ToString() + ResponseEnd;

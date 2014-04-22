@@ -5,6 +5,6 @@ namespace Brewmasters
 {
     public enum ProcessStep
     {
-        Idle,Cleaning,Mashing,Sparging,Boiling,Cooling,Reset
+        Idle,PreMash,Mashing,Sparging,Boiling,Cooling,Reset
     }
 }
