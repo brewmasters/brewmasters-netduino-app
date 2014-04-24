@@ -114,10 +114,14 @@ namespace Brewmasters
 
                         try{
                             String URL = StringHelper.GetTextBetween(request, "GET", "HTTP");
+                            if (URL.Equals(""))
+                            {
+                                URL = StringHelper.GetTextBetween(request, "POST", "HTTP");
+                            }
                             if (URL.Equals("status") || URL.Equals("/status"))
                             {
-                                ResponseObject ro = new ResponseObject("");
-                                string response = JSONSerializer.Serialize(ro);
+                                
+                                string response = JSONSerializer.Serialize(Program.ResponseObj);
                                 //string response = "Nice";
                                 string header = "HTTP/1.0 200 OK\r\nContent-Type: text; charset=utf-8\r\nContent-Length: " + response.Length.ToString() + "\r\nConnection: close\r\n\r\n";
                                 clientSocket.Send(Encoding.UTF8.GetBytes(header), header.Length, SocketFlags.None);
@@ -129,9 +133,10 @@ namespace Brewmasters
                             
                                 LoadRecipe(request);
                                 string response = "Recipe failed to load please try again";
-                                if (currentRecipe != null)
+                                if (Program.currentRecipe != null)
                                 {
                                     Program.NextStep = true;
+                                    Program.isBrewing = true;
                                     response = "Recipe Loaded Successfully";
                                 }
 
@@ -234,7 +239,8 @@ namespace Brewmasters
                             {
                                 if (Program.step.Equals(ProcessStep.Boiling) && Program.isWaiting)
                                 {
-                                    Program.isWaiting = false;
+                                    //Program.isWaiting = false;
+                                    Program.ingredientAdded = true;
                                 }
                                 string response = "Continuing Boiling";
 
@@ -259,6 +265,17 @@ namespace Brewmasters
 
                                 clientSocket.Send(Encoding.UTF8.GetBytes(response), response.Length, SocketFlags.None);
 
+                            }
+                            else if (URL.Equals("reset") || URL.Equals("/reset"))
+                            {
+                                Program.resetFlag = true;
+                                string response = "Reset to Idle state";
+
+
+                                string header = "HTTP/1.0 200 OK\r\nContent-Type: text; charset=utf-8\r\nContent-Length: " + response.Length.ToString() + "\r\nConnection: close\r\n\r\n";
+                                clientSocket.Send(Encoding.UTF8.GetBytes(header), header.Length, SocketFlags.None);
+
+                                clientSocket.Send(Encoding.UTF8.GetBytes(response), response.Length, SocketFlags.None);
                             }
                             
                         }
@@ -286,7 +303,9 @@ namespace Brewmasters
         private void LoadRecipe(String recipe)
         {
             
-            this.currentRecipe = JSONSerializer.Deserialize(recipe);
+            Program.currentRecipe = JSONSerializer.Deserialize(recipe);
+            Program.currentRecipe.mash_temperature += 12;
+            
             
             //_thread.Abort();
         }
